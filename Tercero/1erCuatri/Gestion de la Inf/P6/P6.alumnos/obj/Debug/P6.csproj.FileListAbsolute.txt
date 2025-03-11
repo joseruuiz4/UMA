@@ -1,0 +1,23 @@
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\bin\Debug\P6.exe.config
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\bin\Debug\P6.exe
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\bin\Debug\P6.pdb
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.csproj.AssemblyReference.cache
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P5.Form1.resources
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.Properties.Resources.resources
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.csproj.GenerateResource.cache
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.csproj.CoreCompileInputs.cache
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.exe
+E:\pastrana\Gestion de Informacion\curso2024.2025\Practicas\Practica6\P6.alumnos\obj\Debug\P6.pdb
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\P6.exe.config
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.exe
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.pdb
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.csprojResolveAssemblyReference.cache
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.Form1.resources
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.Properties.Resources.resources
+C:\Users\alumno\Desktop\P6.alumnos\obj\Debug\P6.csproj.GenerateResource.Cache
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\P6.exe
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\P6.pdb
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\EntityFramework.dll
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\EntityFramework.xml
+C:\Users\alumno\Desktop\P6.alumnos\bin\Debug\EntityFramework.SqlServer.xml

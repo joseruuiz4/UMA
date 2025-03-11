@@ -1,0 +1,34 @@
+package _CFilosofosTenedoresCAMBIADOS;
+
+public class Principal {
+
+	public static void main(String[] args) {
+		final int N = 5;
+		
+		Tenedor [] tenedores = new Tenedor[5];
+		for (int i=0; i<tenedores.length; i++){
+			tenedores[i] = new Tenedor(i);
+		}
+		
+		Filosofo [] filosofos = new Filosofo[5];
+		for (int i=0; i<filosofos.length-1; i++){
+			filosofos[i] = new Filosofo(i,tenedores[i],tenedores[(i+1)%N]);
+		}
+		int ult = filosofos.length-1;
+		filosofos[ult] = new Filosofo(ult,tenedores[(ult+1)%N],tenedores[ult]);
+
+		for (int i=0; i<N; i++){
+			filosofos[i].start();
+		}
+		
+		for (int i=0; i<N; i++){
+			try {
+				filosofos[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

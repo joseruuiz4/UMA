@@ -1,0 +1,54 @@
+model Equipos 
+
+class Estadio
+end
+
+class Equipo
+end
+
+
+association Campo between
+    Estadio[1..1] role estadio
+    Equipo[0..*] role equipo
+end
+
+associationclass Partido between
+    Equipo[0..*] role local
+    Equipo[0..*] role visitante 
+    attributes
+        jugado : Boolean
+        golesLocal : Integer
+        golesVisitante : Integer
+    operations
+        golLocal()
+            begin
+                declare golesaux : Integer; 
+                golesaux := self.golesLocal;
+                self.golesLocal := golesaux + 1;
+            end
+            pre noHaTerminadoLocal : not self.jugado
+            post GolesBien: self.golesLocal@pre = self.golesLocal - 1
+
+        golVisitante()
+            begin 
+                declare golesaux : Integer;
+                golesaux:= self.golesVisitante;
+                self.golesVisitante := golesaux + 1;
+            end 
+            pre noHaTerminadoVisitante : not self.jugado
+            post GolesBienV : self.golesVisitante@pre = self.golesVisitante - 1
+
+end 
+
+association Ganador between
+    Equipo[0..1] role ganador
+    Partido[0..*] role partidoGanador
+end
+
+constraints
+context Partido 
+    inv LocalGanador : self.jugado and self.golesLocal > golesVisitante implies self.ganador = self.local
+    inv VisitanteGanador : self.jugado and self.golesVisitante > golesLocal implies self.ganador = self.visitante
+    inv SinGanador : not self.jugado or (self.jugado and self.golesLocal = self.golesVisitante) implies self.ganador->isEmpty()
+    inv EquiposDistintos : self.local <> self.visitante
+    inv GolesOK : self.golesLocal >= 0 and self.golesVisitante >= 0

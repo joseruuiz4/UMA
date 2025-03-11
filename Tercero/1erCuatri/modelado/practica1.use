@@ -1,0 +1,147 @@
+model Aviacion
+
+-------------- Enumerations ------------
+enum EstadoVuelo {Volando, enHangar, enDesguace}
+
+
+
+------- Clases ---------
+class Avion
+attributes
+numVuelos : Integer derive :
+    self.vuelos->size()
+numKms : Integer derive :
+    self.vuelos->collect(v|v.numKms)-> sum()
+estado : EstadoVuelo
+end
+
+class Aerolinea
+attributes
+nombre : String --Unico
+end
+
+associationclass Contrato between
+    Aerolinea[0..*] role Usa
+    Avion [0..*] role Pertenece
+  attributes
+    NumMeses : Integer
+    PrecioMes : Integer
+    PrecioTotal : Integer derive: 
+        self.NumMeses * self.PrecioMes
+end
+
+
+class Vuelo
+attributes
+id : String --Unico
+numKms : Integer
+end
+
+class Persona
+attributes
+edad : Integer
+nombre : String
+end
+
+class Piloto < Persona
+attributes
+numKms : Integer derive : 
+
+esPro : Boolean derive : 
+    self.pilotoPrincipal -> size() >= 1000 and self.pilotoSecundario ->size() >= 2000
+end
+
+class Pasajero < Persona
+attributes
+end
+
+class Aeropuerto
+attributes
+id : String
+nombre : String
+end
+
+class Ciudad
+attributes
+nombre : String
+end
+
+class Desguace
+attributes
+nAviones : Integer
+end
+
+class Hangar
+attributes
+nAviones : Integer
+end
+
+----------Asociaciones---------------
+association aeropuertoCiudad between 
+    Aeropuerto[0..1] role esta 
+    Ciudad[1..1] role tiene 
+end 
+
+association aeropuertoDesguace between
+    Aeropuerto[1..1] role posee
+    Desguace[0..1] role UbicadoEn
+end
+
+association aeropuertoHangar between
+    Aeropuerto[1..1] role tiene
+    Hangar[1..*] role esta
+end
+
+association aeropuertoAvion between
+    Aeropuerto[0..*] role hay
+    Avion[0..1] role puedeEstar
+end
+
+association vueloAvion between
+    Vuelo[0..*] role vuelos
+    Avion[1..1] role avion
+end
+
+association vueloPilotoPrincipal between
+    Vuelo[0..1] role vueloPP
+    Piloto[1..1] role pilotoPrincipal
+end
+
+association vueloPilotoSecundario between
+    Vuelo[1..1] role vueloPS
+    Piloto[0..1] role pilotoSecundario
+end
+
+association pilotoAerolinea between
+    Aerolinea[0..2] role tiene
+    Piloto[0..*] role perteneceA
+end
+
+
+
+
+association pasajero between
+    Pasajero[1..*] role pasajero
+    Vuelo[0..*] role vuelo
+end
+
+
+
+----------Fin de Asociaciones-------------
+
+
+
+
+
+-----------Invariantes---------
+constraints
+
+context Piloto
+    inv pilotoPro: (self.nVuelosPP >1000 and self.nVuelosPS > 2000) implies self.esPro
+
+context Avion
+    inv avionEnDesguace: self.numVuelos > 1000 implies self.estado = EstadoVuelo::enDesguace
+
+context Vuelo
+inv pilotosDebenSerDistintos:
+    self.pilotoPrincipal <> self.pilotoSecundario

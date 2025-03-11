@@ -1,0 +1,21 @@
+model BrazoMecanico
+
+
+--estados articulo agarrado, libre
+-- o quieto o moviendose
+
+class Brazo 
+attributes
+    x : Real
+    y : Real
+    z : Real
+operations
+    grasp() : Boolean
+end
+
+class Articulo
+attributes 
+    x : Real
+    y : Real
+    z : Real
+end

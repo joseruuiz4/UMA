@@ -1,0 +1,78 @@
+model CompanyModel
+
+-----------Enumerados-----------------
+enum Gender{Male, Female}
+-----------Fin de enumerados----------
+
+------------Clases----------------
+class Bank
+attributes
+accountNumber : Integer 
+end
+
+class Person
+attributes 
+isMarried : Boolean 
+isUnemployed : Boolean 
+birthDate : Integer 
+age : Integer 
+firstName : String
+lastName : String
+gender : Gender
+end 
+
+class Company
+attributes
+name : String 
+numberOfEmployees : Integer derive : self.employee->asSequence()->size()
+end
+
+class SmallCompany < Company
+attributes
+budget : Real 
+end
+
+class BigCompany < Company 
+end 
+-------------Fin de Clases--------
+
+----------Asociaciones---------------
+association customerAccount between 
+    Bank[0..*] role bankAccount 
+    Person[0..1] role customer 
+end 
+
+association management between 
+    Person[1..1] role manager 
+    Company[0..*] role managedCompanies 
+end 
+
+association owns between 
+    BigCompany[0..1] role owner
+    Company[1..*] role owned 
+end
+----------Fin de Asociaciones-------------
+
+----------Clases de asociación----------
+associationclass Job between 
+    Person [0..*] role employee
+    Company [0..*] role employer 
+  attributes 
+    title : String
+    startDate : Integer 
+    salary : Integer 
+end 
+
+associationclass Marriage between 
+    Person [0..1] role wife
+    Person [0..1] role husband 
+  attributes 
+    place : String
+    date : Integer
+end 
+----------Fin de Clases de Asociación----------
+-----------Invariantes---------
+constraints
+
+context Person
+    inv reallyMarried: self.isMarried implies not self.husband.oclIsUndefined() or not self.wife.oclIsUndefined()

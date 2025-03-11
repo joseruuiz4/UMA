@@ -1,0 +1,23 @@
+reset 
+
+!new Clock('Clock1')
+!Clock1.now := 0
+
+!new Coche('Coche1')
+!Coche1.fechaMatriculacion := 0
+!Coche1.kilometrosRecorridos := 0.0
+!Coche1.velocidad := 27
+
+!new Ciudad('Malaga')
+!new Ciudad('Sevilla')
+!new Ciudad('Granada')
+
+!insert(Coche1, Malaga) into CocheCiudad
+
+!insert(Malaga, Sevilla) into InterCiudad
+!InterCiudad1.distanciaKm := 210
+
+!insert(Sevilla, Granada) into InterCiudad
+!InterCiudad2.distanciaKm := 250
+
+check

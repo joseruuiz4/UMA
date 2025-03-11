@@ -1,0 +1,32 @@
+reset 
+
+!new Clock('Clock1')
+!Clock1.now := 25
+
+!new Coche('Coche1')
+!Coche1.fechaMatriculacion := 2
+!Coche1.kilometrosRecorridos := 0.0
+!Coche1.velocidad := 10 
+
+!new Coche('Coche2')
+!Coche2.fechaMatriculacion := 1
+!Coche2.kilometrosRecorridos := 0.0
+!Coche2.velocidad := 20
+
+!new Ciudad('Ciudad1')
+!new Ciudad('Ciudad2')
+!new Ciudad('Ciudad3')
+
+!insert(Coche1, Ciudad1) into CocheCiudad
+!insert(Coche2, Ciudad2) into CocheCiudad
+
+!insert(Ciudad1, Ciudad2) into InterCiudad
+!InterCiudad1.distanciaKm := 10
+
+!insert(Ciudad2, Ciudad3) into InterCiudad
+!InterCiudad2.distanciaKm := 30
+
+!insert(Ciudad3, Ciudad1) into InterCiudad
+!InterCiudad3.distanciaKm := 10
+
+check 

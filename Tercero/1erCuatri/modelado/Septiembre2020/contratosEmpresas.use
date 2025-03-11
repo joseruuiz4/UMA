@@ -1,0 +1,42 @@
+model Empresas
+
+class Empleado
+
+end
+
+
+class Empresa
+
+end
+
+associationclass ContratoEnCurso between
+    Empleado[1..*] role empleado
+    Empresa[0..*] role empresa
+attributes
+    salario : Integer
+    comienzo : Integer
+    aTiempoCompleto : Boolean
+end
+
+constraints
+    context ContratoEnCurso
+        inv salarioPositivo : 
+            self.salario > 0 and self.comienzo > 0
+
+    context Empleado
+        inv solo1ContratoTiempoCompleto : 
+            self.contratoEnCurso->select(c|c.aTiempoCompleto)->size()<=1
+
+    context Empresa 
+        inv menos40TiempoParcial : 
+            self.contratoEnCurso->select(c|c.aTiempoCompleto)->size()/self.contratoEnCurso->size()>=0.6
+
+    context Empleado
+        inv fechaComienzoNoCoincide : 
+            self.contratoEnCurso->isUnique(comienzo)    
+
+    --b
+    
+    context Empleado 
+        inv solo1ContratoEnCursoEmpresa :
+            self.contratoEnCurso->forAll(c1,c2| c1<>c2 implies c1.empresa<>c2.empresa)

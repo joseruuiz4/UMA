@@ -1,0 +1,105 @@
+model Empresa
+
+enum Puesto{Director, Gerente, TBase}
+
+class Empresa
+attributes 
+    pedidoMin : Integer
+end
+
+class Persona
+end
+
+class Empleado < Persona
+end
+
+class Producto
+end
+
+class Pedido 
+attributes
+    precioTotal : Real derive : 
+    let precio = self.cantidadProducto->collect(cp| cp.unidades * cp.producto.almacen->select(a|a.empresa = self.empresa)->any(true).precio )->sum() in 
+    --let esVip = self.persona.cliente->select(c|c.empresaCompra = self.empresa)->any(true).vip in
+    --if(esVip) then precio * 0.9 else precio endif No funciona, pero si desde la consola se hace "?" sobre un objeto pedido si funciona
+    if self.persona.oclIsTypeOf(Empleado) and self.persona.oclAsType(Empleado).empresa->includes(self.empresa) then precio *0.9 else precio endif
+    
+    end
+
+
+
+associationclass Contrato between
+    Empleado[*]role empleado
+    Empresa[1..3]role empresa 
+    attributes
+        puesto : Puesto
+        salario : Integer
+end
+
+associationclass Cliente between
+    Empresa[*]role empresaCompra
+    Persona[*]role persona 
+    attributes
+        vip : Boolean derive :
+        self.persona.pedido->collect(precioTotal)->sum() > 1000 or (self.persona.oclIsTypeOf(Empleado) and self.persona.oclAsType(Empleado).empresa->includes(self.empresaCompra))
+end
+
+associationclass Almacen between
+    Empresa[*]role empresa 
+    Producto[*]role producto 
+    attributes
+        cantidad : Integer
+        precio : Integer
+end
+
+associationclass CantidadProducto between
+    Pedido[*]role pedido 
+    Producto[*]role producto
+    attributes
+        unidades : Integer
+end
+
+associationclass Despensa between
+    Producto[0..10]role producto
+    Persona[*]role persona
+    attributes
+        unidades : Integer derive :        
+            self.persona.pedido->collect(p|p.cantidadProducto->select(cp|cp.producto = self.producto)).unidades->sum()
+end
+
+composition PedidoPersona between
+    Persona[1]role persona
+    Pedido[*]role pedido
+end
+
+association EmpresaPedido between
+    Empresa[1]role empresa
+    Pedido[*]role pedido
+end
+
+
+constraints
+
+context Empresa
+    inv SalarioDirectorMayorGerente :   
+        self.contrato->select(c|c.puesto =#Director)->any(true).salario > self.contrato->select(c|c.puesto =#Gerente)->any(true).salario
+    inv SalarioGerenteMayorTBase : 
+        self.contrato->select(c|c.puesto =#Gerente)->any(true).salario > self.contrato->select(c|c.puesto =#TBase)->any(true).salario
+    inv Tiene1Director : 
+        self.contrato->select(c|c.puesto =#Director)->size() = 1
+    inv Tiene1Gerente : 
+        self.contrato->select(c|c.puesto =#Gerente)->size() = 1
+    inv TieneAlMenos1TBase : 
+        self.contrato->select(c|c.puesto =#TBase)->size() >= 1
+
+context Pedido
+    inv SiTienePedidoEsCliente :
+        Empresa.allInstances->forAll(e| self.empresa = e implies self.persona.empresaCompra->includes(e))
+    inv MayorPedidoMinEmpresa : 
+        self.precioTotal >= self.empresa.pedidoMin 
+context CantidadProducto
+    inv udsNoNullNi0 : 
+        self.unidades <> null and self.unidades > 0
+    inv ProductoEnAlmacen : 
+        let udsEnAlmacen = self.producto.almacen->select(a|a.empresa = self.pedido.empresa)->any(true).cantidad in
+        self.unidades <= udsEnAlmacen

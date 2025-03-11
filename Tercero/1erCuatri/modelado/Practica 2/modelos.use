@@ -1,0 +1,116 @@
+model CochesChoque
+
+enum tipo {Mantenimiento, Revision}
+
+class Clock
+    attributes
+    now : Integer
+end
+
+class Ciudad
+        
+
+end
+
+class Coche
+    attributes
+        fechaMatriculacion : Integer
+        kmRecorridos : Integer derive : self.hechoCoche -> collect(v | v.distanciaCiudad) -> sum()
+        --garantia : Boolean derive :
+        -- un coche esta en garantia si no han pasado 4 años desde que se matriculó, 
+        -- si ha pasado menos dias de la garantía del taller oficial 
+
+        --fechaMatriculacion + 400 < Clock.allinstances() -> asSequence() -> first().now --or 
+        --Revision.allInstances()->select(r | r.revisado = self and r.revisa.oclIsTypeOf(TallerOficial))->sortedBy(r | r.fechaFin) -> last().fechaFin > Clock.allinstances() -> asSequence() -> first().now - 
+        --Revision.allInstances()->select(r | r.revisado = self and r.revisa.oclIsTypeOf(TallerOficial))->sortedBy(r | r.fechaFin) -> last().revisa.garantia
+
+
+        --mantenimiento : Boolean
+        -- en los primeros 4 años de la fecha de matriculacion no necesita mantenimiento, 
+        --no necesita mantenimiento hasta 1 año despues de la ultima revision de mantenimiento
+
+
+end
+
+
+
+class Taller
+
+
+end
+
+class TallerOficial < Taller
+    attributes
+    garantia : Integer
+
+end
+
+
+
+
+------ASOCIACIONES------
+
+
+associationclass Viaje between 
+    Ciudad[1] role ciudadSalida
+    Ciudad[1] role ciudadLlegada
+        attributes
+        distanciaCiudad : Integer
+        fechaSalida : Integer
+        fechaLlegada : Integer
+end
+
+
+
+
+
+
+association viajeCoche between 
+    Viaje[*] role hechoCoche
+    Coche[*] role realizaViaje
+end
+
+association ciudadTaller between
+    Taller[0..*] role estaEn
+    Ciudad[1] role tiene
+end
+
+associationclass Revision between
+    Coche[0..*] role revisado
+    Taller[1..*] role revisa
+attributes
+        fechaInicio : Integer
+        fechaFin : Integer
+        tipo : tipo 
+end
+
+
+
+
+----INVARIANTES
+constraints
+-- cada ciudad debe estar al menos a 5km de otra
+context Viaje 
+inv distancia5Kms : 
+    self.distanciaCiudad >= 5
+-- todas las revisiones deben tener lugar despues de que el coche se matriculase
+context Coche
+inv despuesMatriculacion :
+    self.revision -> select(r | r.fechaInicio < self.fechaMatriculacion) -> size() = 0 --no me deja q vaya el coche 2 veces al mismo taller
+
+
+-- el coche se debe someter a una revision como maximo en un momento dado
+
+
+
+
+-- en cada ciudad habra a lo sumo un taller oficial, pudiendo haber varios talleres no oficiales
+context Ciudad 
+inv unoSoloOficial : 
+    self.estaEn -> select(oclIsTypeOf(TallerOficial)) -> size() = 1
+-- si un coche esta sometido a una revision, el coche debe encontrarse en la ciudad donde esta el taller
+-- si un coche está realizando actualmente algun viaje, el viaje no tiene hora de llegada
+-- un coche se encontrará en todo momento o realizando un viaje o en una ciudad
+-- si un coche a completado al menos un viaje y no se encuentra viajando, debe encontrarse en la ciudad a la que llego en su ultimo viaje
+-- dos viajes no se pueden solapar (uno despues de otro)
+-- primer viaje es desde A hasta B, el siguiente es desde B hasta donde sea

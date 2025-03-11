@@ -1,0 +1,313 @@
+model CochesModel
+
+enum TipoRevision { Mantenimiento, Reparacion }
+
+-------------- Classes ------------------
+-- class Clock
+-- attributes
+--     now : Integer
+-- end
+
+
+
+class Clock 
+  attributes
+    now : Integer init = 0 -- POSIX representation starting at 0
+    resolution: Integer init = 1 
+  operations
+    tick()
+      begin
+        self.now := self.now + self.resolution;
+        for o in self.ao do
+          o.tick()
+        end;
+      end
+end
+
+abstract class ActiveObject -- real-time objects 
+  operations
+    tick() begin end
+end
+
+association Time between 
+  Clock [1] role clock
+  ActiveObject [*] role ao ordered
+end
+
+
+
+
+
+
+
+class Ciudad
+end
+
+class Coche  < ActiveObject
+attributes
+    fechaMatriculacion : Integer
+    velocidad : Real
+
+    kilometrosRecorridos : Real derive :
+        self.viaje->select(v| not v.km.oclIsUndefined())->collect(v | v.km)->sum()
+    garantia : Boolean  derive :
+        let fechaActual : Integer = Clock.allInstances()->asSequence()->first().now in
+        let antiguedadAnos : Integer = ((fechaActual - self.fechaMatriculacion) / 100).floor() in
+        let ultimaRevision : Revision = self.revision -> select(r | r.taller.oclIsTypeOf(TallerOficial)) -> sortedBy(r | r.fechaFin) -> last() in
+            antiguedadAnos < 4 or
+            (not ultimaRevision.oclIsUndefined() and
+                ultimaRevision.fechaFin + ultimaRevision.taller.oclAsType(TallerOficial).tiempoGarantia > fechaActual)
+
+    mantenimiento : Boolean derive :
+        let fechaActual : Integer = Clock.allInstances()->asSequence()->first().now in
+        let antiguedadAnos : Integer = ((fechaActual - self.fechaMatriculacion) / 100).floor() in
+        let ultimaRevisionMantenimiento : Revision = self.revision -> 
+            select(r | r.tipo = #Mantenimiento) -> sortedBy(r | r.fechaFin) -> last() in
+                antiguedadAnos > 4 and 
+                    (not ultimaRevisionMantenimiento.oclIsUndefined() and ultimaRevisionMantenimiento.fechaFin + 100 <= fechaActual)
+
+operations
+    comenzarViaje(ciudadDestino : Ciudad)
+    begin
+            declare nuevoViaje : Viaje; --Declaramos la instacia del nuevo viaje
+            
+            nuevoViaje := new Viaje;
+            insert(self.ciudad, nuevoViaje ) into ViajeCiudadInicio; --Asociamos la ciudad origen a la instacia del nuevo viaje
+            insert(ciudadDestino, nuevoViaje ) into ViajeCiudadFin;
+
+            nuevoViaje.fechaSalida := Clock.allInstances()->any(true).now;
+            nuevoViaje.km := 0; --Lleva 0 km recorridos
+
+            insert(self, nuevoViaje) into CocheViaje;
+            delete(self, self.ciudad) from CocheCiudad; --Eliminamos la ciudad en la que se situa
+    end
+    --El coche tiene que estar en la ciudad de inicio y debe existir la clase InterCiudad entre esas ciudades
+    pre existeDistanciaCiudades : not self.ciudad.oclIsUndefined() and InterCiudad.allInstances()->exists(r | (r.ciudadInicio = self.ciudad and r.ciudadFin = ciudadDestino) or (r.ciudadFin = self.ciudad and r.ciudadInicio = ciudadDestino))
+    --El viaje se ha creado con éxito
+    post viajeCreadoCorrectamente : self.viaje->sortedBy(v | v.fechaSalida)->last().ciudadInicioViaje = self.ciudad@pre and self.viaje->sortedBy(v | v.fechaSalida)->last().ciudadFinViaje = ciudadDestino and self.viaje->size() =  self.viaje@pre->size()+1 and self.ciudad.oclIsUndefined()
+
+
+    avanzar()
+    begin
+        declare ultimoViaje : Viaje, distanciaCiudades : Real, fecha : Integer;
+        fecha := Clock.allInstances()->asSequence()->first().now;
+        self.viaje->sortedBy(v | v.fechaSalida)->last().km := self.viaje->sortedBy(v | v.fechaSalida)->last().km + self.velocidad;
+
+        ultimoViaje :=  self.viaje->sortedBy(v | v.fechaSalida)->last();
+
+        distanciaCiudades := InterCiudad.allInstances()->
+            select(d | 
+                    (d.ciudadInicio = ultimoViaje.ciudadInicioViaje and
+                    d.ciudadFin = ultimoViaje.ciudadFinViaje) or
+                    (d.ciudadInicio = ultimoViaje.ciudadFinViaje and
+                    d.ciudadFin = ultimoViaje.ciudadInicioViaje)
+                )->asSequence()->first().distanciaKm;
+        
+        if ultimoViaje.km >= distanciaCiudades then
+            self.viaje->sortedBy(v | v.fechaSalida)->last().km := distanciaCiudades;
+
+            self.viaje->sortedBy(v | v.fechaSalida)->last().fechaLlegada := fecha;
+            insert(self, ultimoViaje.ciudadFinViaje) into CocheCiudad;
+
+        end;
+    end
+    pre EstaViajando : self.ciudad.oclIsUndefined() and self.viaje->sortedBy(v | v.fechaSalida)->last().fechaLlegada.oclIsUndefined()
+    post cocheDespuesAvanzar :
+                    self.ciudad.oclIsUndefined() implies 
+                    (
+                        self.viaje -> select(v | v.fechaLlegada.oclIsUndefined()) -> asSequence() -> first().km = 
+                        self.viaje@pre -> select(v | v.fechaLlegada.oclIsUndefined()) -> asSequence() -> first().km + self.velocidad
+
+                    or not self.ciudad.oclIsUndefined() implies 
+                        self.viaje->sortedBy(v | v.fechaSalida)->last().km >
+                        self.viaje@pre->sortedBy(v | v.fechaSalida)->last().km
+                    )
+
+    tick()
+    begin
+        if self.ciudad.oclIsUndefined() then
+            self.avanzar();
+        end;
+    end
+    
+end
+
+
+
+class Taller
+end
+
+class TallerOficial < Taller
+attributes
+    tiempoGarantia : Integer
+end
+
+class Revision
+attributes
+    fechaInicio : Integer
+    fechaFin : Integer
+    tipo : TipoRevision
+end
+
+class Viaje
+    attributes 
+        fechaSalida : Integer
+        fechaLlegada : Integer
+        km : Real
+end
+
+associationclass InterCiudad between
+    Ciudad [0..*] role ciudadInicio
+    Ciudad [0..*] role ciudadFin
+attributes
+    distanciaKm : Real
+end
+
+-------------- Associations ------------------
+association CocheViaje between
+    Coche [1..1] role coche
+    Viaje [0..*] role viaje
+end
+
+association TallerCiudad between
+    Taller [0..*] role taller
+    Ciudad [1..1] role ciudad
+end
+
+association CocheCiudad between
+    Coche [0..*] role coche
+    Ciudad [0..1] role ciudad
+end
+
+association RevisionTaller between
+    Revision [0..*] role revision
+    Taller [1..1] role taller
+end
+
+association RevisionCoche between
+    Revision [0..*] role revision
+    Coche [1..1] role coche
+end
+
+association ViajeCiudadInicio between 
+    Ciudad[1] role ciudadInicioViaje
+    Viaje[0..1] role viajeInicio
+end
+
+association ViajeCiudadFin between 
+    Ciudad[1] role ciudadFinViaje
+    Viaje[0..1] role viajeFin
+end
+
+-------------- Invariants ------------------
+constraints
+
+
+context InterCiudad
+    -- Cada ciudad debe estar al menos a 5 kilómetros de distancia de otra
+    inv distancia5Km : self.distanciaKm >= 5
+
+context Revision 
+    -- Todas las revisiones deben tener lugar después de que el coche se matriculase
+    inv revisionPosteriorMatriculacion : self.fechaInicio > self.coche.fechaMatriculacion
+
+    -- Si un coche está siendo sometido a una revisión, entonces el coche debe encontrarse en la misma ciudad donde está el taller.
+    -- inv revisionMismaCiudad :
+    --     self.revision -> forAll(r | r.fechaFin.oclIsUndefined() implies r.taller.ciudad = self.ciudad)
+    inv RevisionEnProcesoCiudadTaller : 
+        let fecha : Integer = Clock.allInstances()->asSequence()->first().now in
+        (self.fechaInicio <= fecha and self.fechaFin >= fecha) implies
+        self.coche.ciudad = self.taller.ciudad
+
+
+
+context Coche    
+    -- Como mucho, un coche se debe someter a una revisión, como máximo, en un momento dado
+    inv UnaSolaRevisionAlaVez : self.revision->forAll(r1, r2 | 
+        r1 = r2 or 
+        (
+            r1.fechaInicio < r2.fechaInicio and 
+            r1.fechaFin < r2.fechaFin and
+            r1.fechaFin < r2.fechaInicio
+        )
+        or
+        (
+            r1.fechaInicio > r2.fechaInicio and 
+            r1.fechaFin > r2.fechaFin and
+            r1.fechaFin > r2.fechaInicio
+        )
+    )
+
+    -- Un coche se encontrará en todo momento bien realizando un viaje determinado o bien en una ciudad.
+    inv CocheViajandoOEnCiudad : 
+        if self.viaje ->notEmpty() then
+            (self.viaje ->sortedBy(v | v.fechaSalida)->last().fechaLlegada.oclIsUndefined()) 
+            implies self.ciudad.oclIsUndefined()
+        else
+            not self.ciudad.oclIsUndefined()
+        endif
+
+    -- Si el coche ha completado al menos un viaje y no se encuentra viajando, entonces debe encontrarse en la ciudad a la que llegó en su último viaje.
+    inv CocheNoViajandoEstaEnCiudad :  
+        (
+            self.viaje->size() >= 1 and 
+            not (self.viaje->sortedBy(v | v.fechaSalida)->last().fechaLlegada.oclIsUndefined())  
+        )
+        implies
+        (
+            self.ciudad = 
+            self.viaje->sortedBy(v | v.fechaSalida)->last().ciudadFinViaje
+        )
+
+    -- Las ciudades origen y destino deben de ser coherentes
+    inv CiudadesViajesCoherentes :
+        let viajesOrdenados = self.viaje->sortedBy(v | v.fechaSalida) in
+        viajesOrdenados->forAll(v | 
+            let indice = viajesOrdenados->indexOf(v) in
+            indice = viajesOrdenados->size() or --es el ultimo en la lista
+            v.ciudadFinViaje = viajesOrdenados->at(indice + 1).ciudadInicioViaje
+        )
+
+    -- Los viajes de un coche no se pueden solapar
+    inv noViajesSolapados :
+        self.viaje -> forAll(v1, v2 | 
+        v1 = v2 or 
+        (
+            v1.fechaSalida < v2.fechaSalida and 
+            v1.fechaLlegada < v2.fechaLlegada and
+            v1.fechaLlegada <= v2.fechaSalida and
+            v1.fechaSalida < v2.fechaLlegada
+            
+        )
+        or
+        (
+            v2.fechaLlegada.oclIsUndefined() and
+            v1.fechaSalida < v2.fechaSalida and 
+            v1.fechaLlegada <= v2.fechaSalida 
+        )
+        or
+        (
+            v1.fechaSalida > v2.fechaSalida and 
+            v1.fechaLlegada > v2.fechaLlegada and
+            v1.fechaLlegada > v2.fechaSalida and
+            v1.fechaSalida >= v2.fechaLlegada
+            
+        )
+        or
+        (
+            v1.fechaLlegada.oclIsUndefined() and
+            v1.fechaSalida > v2.fechaSalida and 
+            v1.fechaSalida >= v2.fechaLlegada
+            
+        )
+    )
+
+
+context Viaje
+    -- En un viaje, el coche siempre realiza un recorrido entre dos ciudades
+    inv viajeEntre2Ciudades: not(self.ciudadInicioViaje.oclIsUndefined() or self.ciudadFinViaje.oclIsUndefined())
+
+context Ciudad
+    -- Cada taller se sitúa en una ciudad, y en cada ciudad habrá, a lo sumo, un taller oficial, pudiendo haber varios talleres no oficiales.
+    inv Solo1TallerOficialPorCiudad: self.taller->select(t | t.oclIsTypeOf(TallerOficial))->size() <= 1
+

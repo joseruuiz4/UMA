@@ -1,0 +1,57 @@
+reset 
+
+!new Clock('Clock1')
+!new Coche('Coche1')
+!insert(Clock1,Coche1) into Time
+
+
+!Coche1.fechaMatriculacion := 0
+!Coche1.kilometrosRecorridos := 0.0
+!Coche1.velocidad := 27
+
+
+
+!new Ciudad('Malaga')
+!new Ciudad('Sevilla')
+!new Ciudad('Granada')
+
+!insert(Coche1, Malaga) into CocheCiudad
+
+
+
+!insert(Malaga, Sevilla) into InterCiudad
+!InterCiudad1.distanciaKm := 210
+
+!insert(Sevilla, Granada) into InterCiudad
+!InterCiudad2.distanciaKm := 250
+
+check
+
+
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Coche1.comenzarViaje(Sevilla)
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Coche1.comenzarViaje(Granada)
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+!Clock1.tick()
+
+

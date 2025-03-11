@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Notificación de Entrega - DHL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .email-container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            background-color: #ffcc00;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .button {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #c9302c;
+        }
+        .footer {
+            font-size: 12px;
+            color: gray;
+            text-align: center;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">Confirme su Dirección de Entrega</div>
+        <div class="content">
+            <p>Estimado/a Cliente,</p>
+            <p>Su paquete no pudo ser entregado debido a una dirección incorrecta o incompleta.</p>
+            <p>Por favor, confirme su dirección en el siguiente enlace para reprogramar la entrega:</p>
+            <a class="button" href="http://dhl-falso.com/verificar">Confirmar Dirección</a>
+            <p>Si no realiza la confirmación en las próximas 24 horas, su paquete será devuelto.</p>
+        </div>
+        <div class="footer">
+            © 2025 DHL Express. Todos los derechos reservados.<br>
+            Este correo fue generado automáticamente. No responda a este mensaje.
+        </div>
+    </div>
+</body>
+</html>

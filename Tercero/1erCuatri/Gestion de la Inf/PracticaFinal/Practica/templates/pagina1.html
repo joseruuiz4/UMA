@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Piezas Taller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group2 {
+            width: 96.4%;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+
+        .button-group {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .selected {
+            background-color: #2398bb;
+            /* Color de fondo cuando se selecciona una fila */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Piezas Taller</h1>
+        <div class="form-group">
+            <label for="materia">Materia</label>
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+            <select id="materia" name="materia" size="5">
+                {% for materia in materias %}
+                <option value="{{ materia.0 }}">{{ materia.1 }}</option>
+                {% endfor %}
+            </select>
+            <script>
+            
+                document.getElementById("materia").addEventListener("change", function () {
+                    var materiaId = this.value;
+
+                    // Enviar el ID al servidor usando AJAX
+                    fetch("{% url 'procesar_materia_ajax' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                        },
+                        body: JSON.stringify({ "materia_id": materiaId })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                if (userRole === 'invitado') {
+                                    alert('No tienes permiso para cargar las piezas.');
+                                    return;
+                                }
+                                // Limpiar la tabla existente
+                                var tableBody = document.querySelector("table tbody");
+                                tableBody.innerHTML = ""; // Limpia las filas anteriores
+
+                                // Recorrer las piezas y añadirlas como filas en la tabla
+
+                                data.piezas.forEach(pieza => {
+                                    var row = document.createElement("tr");
+
+                                    row.innerHTML = `
+                            <td>${pieza.ID}</td>
+                            <td>${pieza.NOMBRE}</td>
+                            <td>${pieza.FABRICANTE}</td>
+                            <td>${pieza.ID_TIPO}</td>
+                        `;
+                                    row.addEventListener("click", function () {
+                                        selectRow(row);
+                                    })
+
+                                    tableBody.appendChild(row);
+                                });
+
+                                console.log("Piezas añadidas a la tabla.");
+                            } else {
+                                console.error("Error en la respuesta:", data.error);
+                                alert("Error al obtener las piezas.");
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                        document.getElementById("nombre").value = "";
+                        document.getElementById("fabricante").value = "";
+                });
+
+                function cargarProductos() {
+                    
+                    
+                    const materia_id = document.getElementById('materia').value;
+
+                    
+                    // Enviar el ID al servidor usando AJAX
+                    fetch("{% url 'procesar_materia_ajax' %}", {
+                        
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                        },
+                        body: JSON.stringify({ materia_id })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Limpiar la tabla existente
+                                var tableBody = document.querySelector("table tbody");
+                                tableBody.innerHTML = ""; // Limpia las filas anteriores
+
+                                document.getElementById('nombre').value = '';
+                                document.getElementById('fabricante').value = '';
+
+                                data.piezas.forEach(pieza => {
+                                    var row = document.createElement("tr");
+
+                                    row.innerHTML = `
+                                        <td>${pieza.ID}</td>
+                                        <td>${pieza.NOMBRE}</td>
+                                        <td>${pieza.FABRICANTE}</td>
+                                        <td>${pieza.ID_TIPO}</td>
+                                    `;
+                                    row.addEventListener("click", function () {
+                                        selectRow(row);
+                                    })
+
+                                    tableBody.appendChild(row);
+                                });
+
+                                console.log("Piezas añadidas a la tabla.");
+                            } else {
+                                console.error("Error en la respuesta:", data.error);
+                                alert("Error al obtener las piezas.");
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                        
+                        
+                }
+
+
+                function selectRow(row) {
+                    let rows = document.querySelectorAll("table tbody tr")
+                    rows.forEach(r => r.classList.remove("selected"))
+
+                    row.classList.add("selected")
+
+                    let id = row.cells[0].innerText;
+                    let nombre = row.cells[1].innerText;
+                    let fabricante = row.cells[2].innerText;
+                    let idTipo = row.cells[3].innerText;
+
+
+                    console.log("Fila seleccionada:", { id, nombre, fabricante, idTipo })
+
+                    document.getElementById("nombre").value = nombre;
+                    document.getElementById("fabricante").value = fabricante;
+                }
+            </script>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOMBRE</th>
+                        <th>FABRICANTE</th>
+                        <th>ID_TIPO</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group2">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" />
+        </div>
+        <div class="form-group2">
+            <label for="fabricante">Fabricante</label>
+            <input type="text" id="fabricante" name="fabricante" />
+        </div>
+        <div class="button-group">
+            <button type="button" onclick="insertarProducto()">Insertar</button>
+            <button type="button" onclick="borrarProducto()">Borrar</button>
+            <button type="button" onclick="actualizarProducto()">Actualizar</button>
+            <button type="button" onclick="window.location.reload()">Limpiar</button>
+            <button type="button" onclick="cerrarPagina()">Salir</button>
+            <script>
+
+                const userRole = "{{ user_role }}";
+
+                function cerrarPagina() {
+                    //window.location.href = "about:blank"; //deja la pagina en blanco
+                    window.location.href = "/"; //Vuelve a la pagina del login
+                }
+
+                function insertarProducto() {
+
+                    if (userRole !== 'administrador') {
+                        alert('No tienes permiso para actualizar productos.');
+                        return;
+                    }
+
+
+
+                    const nombre = document.getElementById('nombre').value;
+                    const fabricante = document.getElementById('fabricante').value;
+                    const materia_id = document.getElementById('materia').value;
+
+                    if(!materia_id){
+                        alert('Seleccione una categoría')
+                        return
+                    }
+                    
+                    if(!nombre){
+                        alert('Introduzca un nombre válido')
+                        return
+                    }
+                    
+                    if(!fabricante){
+                        alert('Introduzca un fabricante válido')
+                        return
+                    }
+
+                    fetch("{% url 'insertar_producto' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector("[name=csrfmiddlewaretoken]").value
+                        },
+                        body: JSON.stringify({ nombre, fabricante, materia_id })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                cargarProductos();
+                            } else {
+                                alert('Error al insertar el producto');
+                            }
+                        });
+                }
+
+                function borrarProducto() {
+                    if (userRole !== 'administrador') {
+                        alert('No tienes permiso para actualizar productos.');
+                        return;
+                    }
+
+                    try{
+                    const id = document.querySelector("table tbody tr.selected td:first-child").innerText;
+                    fetch("{% url 'borrar_producto' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector("[name=csrfmiddlewaretoken]").value
+                        },
+                        body: JSON.stringify({ id })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                cargarProductos();
+                            } else {
+                                alert('Error al borrar el producto: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error al borrar el producto');
+                        });
+                    }catch{
+                        alert('Seleccione una pieza de la lista')
+                        return
+                    }
+                    
+
+                    
+                }
+
+                function actualizarProducto() {
+                    if (userRole !== 'administrador') {
+                        alert('No tienes permiso para actualizar productos.');
+                        return;
+                    }
+
+                    const nombre = document.getElementById('nombre').value;
+                    const fabricante = document.getElementById('fabricante').value;
+                    const materia_id = document.getElementById('materia').value;
+
+                    if(materia_id === ''){
+                        alert('Seleccione una categoría')
+                        return
+                    }
+                    
+                    if(nombre === ''){
+                        alert('Introduzca un nombre válido')
+                        return
+                    }
+                    
+                    if(fabricante === ''){
+                        alert('Introduzca un fabricante válido')
+                        return
+                    }
+
+                    try{
+                        const id = document.querySelector("table tbody tr.selected td:first-child").innerText;
+                        fetch("{% url 'actualizar_producto' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector("[name=csrfmiddlewaretoken]").value
+                        },
+                        body: JSON.stringify({ id, nombre, fabricante, materia_id })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+
+                                cargarProductos();
+                            } else {
+                                alert('Error al actualizar el producto: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error al actualizar el producto');
+                        });
+                    }catch{
+                        alert('Seleccione una pieza de la lista')
+                        return
+                    }                 
+                }
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+reset
+!new Person('Juan')
+!Juan.firstName := 'Juan'
+!Juan.age := 33
+!Juan.gender := #Male
+!Juan.isMarried := true
+
+!new Person('Laura')
+!Laura.firstName := 'Laura'
+!Laura.age := 31
+!Laura.gender := #Female
+!Laura.isMarried := true
+
+!new Person('Pepe')
+!Pepe.firstName := 'Pepe'
+!Pepe.gender := #Male
+!Pepe.age := 31
+
+!new Person('Maria')
+!Maria.firstName := 'Maria'
+!Maria.gender := #Female
+!Maria.age := 32
+
+!new Person('Ana')
+!Ana.firstName := 'Ana'
+!Ana.gender := #Female
+!Ana.age := 38
+
+
+
+
+!insert(Laura,Juan) into Marriage --Marriage1
+!Marriage1.place := 'Malaga'
+!Marriage1.date := 20220806
+
+!new Company('Telefonica')
+!Telefonica.name := 'Telefonica'
+
+!insert(Juan,Telefonica) into management
+!insert(Juan,Telefonica) into Job --Job1
+!Job1.title:='director'
+!Job1.salary := 1000
+!insert(Laura,Telefonica) into Job --Job2
+!Job2.salary := 1100
+!Job2.title:='head'
+!insert(Pepe,Telefonica) into Job --Job3
+!Job3.salary := 900
+!Job3.title:='secretary'
+!insert(Ana,Telefonica) into Job --Job4
+!Job4.salary := 2200
+!Job4.title:="designer"
+!insert(Maria,Telefonica) into Job --Job5
+
+!new SmallCompany('FisioUVE')
+!FisioUVE.budget := 50000
+!FisioUVE.name:='FisioUVE'
+!new SmallCompany('FisioTeatinos')
+!FisioTeatinos.budget := 20000
+!FisioTeatinos.name:='FisioTeatinos'
+
+!new BigCompany('FisioMalaga')
+!FisioMalaga.name:='FisioMalaga'
+!insert(FisioMalaga,FisioUVE) into owns
+!insert(FisioMalaga,FisioTeatinos) into owns
+
+!insert(Laura,FisioUVE) into Job --Job6
+

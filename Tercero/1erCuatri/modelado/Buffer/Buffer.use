@@ -1,0 +1,54 @@
+model Buffer
+
+class Elemento
+
+end
+
+
+class Buffer
+    attributes 
+        capacity : Integer
+
+    operations
+        put(p : Elemento)
+            begin 
+                insert(self, p) into Contenedor;
+            end 
+            pre notFull : (self.elements->size() > 0 ) and (not self.elements->includes(p))
+            post elementInserted : (self.elements = self.elements@pre->append(p)) and (self.elements->size() > self.elements@pre->size())
+
+    statemachines
+        psm Buffer
+            states 
+                s : Initial
+                Empty[self.elements->size() = 0]
+                Normal
+                Full[self.elements->size()=self.capacity]
+            transitions
+                s -> Empty
+                Empty -> Normal{[self.capacity > 1] put()}
+                Normal -> Normal{[self.elements->size() < self.capacity-1] put()}
+                Normal -> Full{[(self.capacity > 1)and (self.elements->size() = self.capacity-1)] put()}
+                Empty -> Full{[sel.capacity = 1] put()}
+
+
+                Full -> Normal{[self.capacity > 1] get()}
+                Normal -> Normal {[self.elements->size() > 1] get()}
+                Normal -> Empty {[self.elements->size()=1] get()}
+                Full -> Empty {[self.capacity = 1] get()}
+
+
+end
+
+
+aggregation Contenedor between
+    Elemento[0..*] role elements ordered
+    Buffer[0..1] role Buffer
+end
+
+constraints 
+context Buffer inv Cap1min
+    self.capacity > 0
+
+
+

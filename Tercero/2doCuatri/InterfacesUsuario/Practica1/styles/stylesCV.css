@@ -1,0 +1,22 @@
+section h2{
+    background-color: aqua;
+    margin-bottom: 10px;
+}
+section dl dd span{
+    float: right;
+}
+section dl dd{
+    margin-left: 10px;
+}
+section dl dt{
+    font-weight: bold;
+}
+section {
+    clear: both;
+    margin-bottom: 10px;
+}
+img {
+    float: left;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}

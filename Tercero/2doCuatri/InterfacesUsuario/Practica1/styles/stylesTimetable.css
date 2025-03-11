@@ -1,0 +1,67 @@
+
+
+thead{
+    background-color: rgb(31, 183, 243);
+    color: white;
+}
+
+#timetable{
+    border: 2px solid black;
+    border-collapse: collapse;
+
+    
+}
+
+.databases{
+    background-color: pink !important;
+}
+
+.computer-systems{
+    background-color: rgb(250, 98, 42) !important;
+}
+
+.programming{
+    background-color: greenyellow !important;
+}
+.sport{
+    background-color: rgb(10, 204, 10) !important;
+}
+.web-tech{
+    background-color: green !important;
+}
+.english{
+    background-color: orange !important;
+}
+.networking{
+    background-color: rgb(122, 101, 238) !important;
+}
+.algorithmics{
+    background-color: yellow !important;
+}
+.software-engineering{
+    background-color: rgb(214, 70, 243) !important;
+}
+
+#timetable th{
+    border: 1px solid black;
+}
+
+#timetable td{
+    background-color: rgb(211, 252, 220);
+    height: 60px;
+    width: 600px;
+    text-align: center;
+    border: 1px solid black;
+}
+#separator td{
+    background-color: beige;
+}
+
+#legend td span{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 2px;
+    border: 1px solid black;
+}
+

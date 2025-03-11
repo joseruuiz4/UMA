@@ -1,0 +1,62 @@
+h2{
+    text-align: center;
+}
+#menu{
+    display: flex;
+    gap: 10px;
+    position: relative;
+
+}
+
+#menu img{
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+#logoETSII{
+    position: absolute;
+    top: 210px;
+    left: 295px;
+    height: 75px;
+    width: 222px;
+    border-radius: 5px;
+    opacity: 1;
+}
+
+#logoETSII:hover{
+    margin: 2px solid black;
+    opacity: 1;
+    border: 1px solid black;
+}
+
+#logoUMA{
+    position: absolute;
+    top: 80px;
+    left: 365px;
+    height: 100px;
+    width: 240px;
+    border-radius: 5px;
+    opacity: 1;
+}
+
+#logoUMA:hover{
+    margin: 2px solid black;
+    opacity: 1;
+    border: 1px solid black;
+}
+
+#logoCV{
+    position: absolute  ;
+    top: 85px;
+    left: 215px;
+    height: 125px;
+    width: 95px;
+    border-radius: 5px;
+    opacity: 1;
+}
+
+#logoCV:hover{
+    margin: 2px solid black;
+    opacity: 1;
+    border: 1px solid black;
+}

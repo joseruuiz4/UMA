@@ -1,0 +1,172 @@
+model Universidad
+
+class Universidad
+    attributes  
+        nombre : String
+    operations
+        Matricularse(t : Titulacion, a : Asignatura, c : Curso, p : Persona)
+            begin
+                declare i : Impartir;
+                i := c.impartir->select(i|i.asignatura = a)->any(true);
+                insert(p, i) into Evaluacion;
+            end
+            pre TitulacionOK : self.titulacion->includes(t)
+            pre AsignaturaOK : t.asignatura->includes(a)
+            pre CursoOK: c.impartir->select(i|i.asignatura = a)->notEmpty()
+            pre NoEsProfesorniAlumno: c.impartir->select(i|i.asignatura = a)->any(true).profesor <> p and 
+                    c.impartir->select(i|i.asignatura = a)->any(true).alumno->excludes(p)
+            pre NoAprobada: p.evaluacion->select(e|e.aprobada and e.impartir.asignatura = a)->isEmpty()
+            pre SiesMasterTieneGrado : t.oclIsTypeOf(Master) implies p.titulo->select(t|t.titulacion.oclIsTypeOf(Grado))->notEmpty()
+            post Matriculado : c.impartir->select(i|i.asignatura = a)->any(true).alumno->includes(a)
+end
+
+abstract class Titulacion
+    attributes 
+        nombre : String
+end 
+
+class Asignatura
+ attributes 
+    creditos : Integer
+end
+
+class Grado < Titulacion
+end
+
+class Master < Titulacion
+end
+
+class Curso
+    attributes
+        anyo : Integer
+end
+
+class Impartir
+end
+
+class Persona
+    operations
+        Califica(n : Integer, p : Persona, a : Asignatura, c : Curso)
+        begin 
+            declare i : Impartir, e : Evaluacion;
+            i := self.imparte->select(i|i.curso = c and i.asignatura = a)->asSequence()->first();
+            e := i.evaluacion->select(e|e.alumno = p)->any(true);
+            e.nota := n;
+        end
+        pre ProfesorDaAsignatura : self.imparte->select(i|i.curso = c and i.asignatura = a)->notEmpty()
+        pre AlumnoDaAsignatura : self.imparte->select(i|i.curso = c and i.asignatura = a)->asSequence()->first().evaluacion->select(e|e.alumno = p)->notEmpty()
+        pre NoCalificado : p.impartir->select(i|i.curso = c and i.asignatura = a)->asSequence()->first().evaluacion->select(e|e.alumno = p)->any(true).nota = null
+        post Calificado : p.impartir->select(i|i.curso = c and i.asignatura = a)->asSequence()->first().evaluacion->select(e|e.alumno = p)->any(true).nota = n
+end
+
+class Titulo 
+attributes
+    nombreUniversidad : String derive : 
+        self.titulacion.universidad.nombre
+    nombreTitulacion : String derive : 
+        self.titulacion.nombre
+
+end
+
+associationclass Evaluacion between 
+    Persona[*]role alumno 
+    Impartir[*]role impartir
+    attributes 
+        nota : Integer
+        aprobada : Boolean derive : 
+                self.nota >= 5
+end
+
+association Imparte between
+    Persona[1..1]role profesor
+    Impartir[*]role imparte
+end
+
+composition PerteneceA between
+    Universidad[1..1] role universidad 
+    Titulacion[*] role titulacion 
+end
+
+aggregation AsignaturaTitulacion between   
+    Titulacion[*] role titulacion    
+    Asignatura[*] role asignatura
+end
+
+association AsignaturaImpartir between
+    Asignatura[1]role asignatura
+    Impartir[*]role impartir
+end
+
+association CursoImparticion between    
+    Curso[1]role curso
+    Impartir[*]role impartir
+end
+
+composition TituladoEn between
+    Titulacion[1..1]role titulacion
+    Titulo[*]role titulo
+end
+
+association CursoTitulo between
+    Curso[1]role curso
+    Titulo[*]role titulo
+end
+
+association Titulado between
+    Persona[1]role persona
+    Titulo[*]role titulo 
+end
+
+constraints
+
+context Asignatura 
+    -- Una misma asignatura solo puede impartir una vez cada curso
+    inv Asignatura1vezPorCurso : 
+        self.impartir->forAll(i1, i2|i1<>i2 implies i1.curso <> i2.curso)
+
+
+
+    -- Cada profesor no puede dar mas de 4 asignaturas por curso
+context Persona
+    inv profesor4asigPorCurso :
+        Curso.allInstances->forAll(c|Persona.allInstances->forAll(p|p.imparte->select(i|i.curso = c)->size() <= 4))
+
+context Evaluacion
+    -- Asignadoles una nota de 0 a 10
+    inv notaDe1a10 : 
+        self.nota<>null implies self.nota >= 0 and self.nota <= 10
+
+context Persona
+    -- un mismo alumno solo puede matricularse de una misma asignatura 3 veces REQ 7
+    inv Solo3MatriculasPorAsignatura :  
+        Asignatura.allInstances->forAll(a|self.impartir->select(i|i.asignatura = a)->size() <= 3)
+
+    --un alumno solo puede aprobar una asignatura 1 vez
+    inv Solo1Vezaprobada : 
+        Asignatura.allInstances->forAll(a|self.evaluacion->select(e|e.aprobada and e.impartir.asignatura = a)->size() <= 1) and
+        self.evaluacion->forAll(e1, e2|e1<>e2 implies ((e1.aprobada and e1.impartir.asignatura = e2.impartir.asignatura) implies e1.impartir.curso.anyo > e2.impartir.curso.anyo) )
+    
+    --los profesores no pueden matricularse de aquellas asignaturas que imparten
+    inv ProfesorNoAlumnoSuAsignatura : 
+        self.imparte->forAll(i|i.alumno->forAll(a|a<>self))
+
+    -- Para estar matriculado de una asignatura de master debe tener un titulo de grado
+        
+    inv GradoAntesDePosgrado :
+        
+        self.impartir.asignatura->collect(a|a.titulacion->select(t|t.oclIsTypeOf(Master)))->size() > 0 implies self.titulo->select(t|t.titulacion.oclIsTypeOf(Grado))->size()>0
+
+    -- Todos los cursos a lo mas el ultimo debe tener todas sus asignaturas evaluadas
+    context Curso   
+        inv TodasAsigEvaluadas : 
+            let maxAnyo : Integer = Curso.allInstances->collect(anyo)->max() in
+            self.impartir->forAll(i|i.curso.anyo < maxAnyo implies i.evaluacion->reject(e|e.nota >= 0  and e.nota <= 10)->size() = 0)
+
+    -- Los cursos deben empezar en años distintos
+        inv AnyosDistintos : 
+            Curso.allInstances->forAll(c1,c2|c1<>c2 implies c1.anyo <> c2.anyo)
+
+    context Titulo
+        inv CreditosParaTitulo :
+            self.persona.evaluacion->select(e|e.aprobada)->collect(impartir)->select(i|i.curso.anyo <= self.curso.anyo and self.titulacion.asignatura->includes(i.asignatura))->collect(asignatura.creditos)->sum() >=
+            if self.titulacion.oclIsTypeOf(Grado) then 240 else 40 endif
