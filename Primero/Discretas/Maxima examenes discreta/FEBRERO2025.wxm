@@ -1,0 +1,60 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 23.05.1 ] */
+/* [wxMaxima: title   start ]
+TEMA 2
+   [wxMaxima: title   end   ] */
+
+
+/* [wxMaxima: section start ]
+Ejercicio 1
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+27^1 + 27^2 + 27^3 + 27^4 + 27^5
+;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Estas son todas las posibles palabras que se pueden formar de a lo sumo 5 letras con un alfabeto de 27 simbolos, como podemos ver:                      15000000 > 14900787
+
+Por lo que podemos afirmar que al menos habrá dos palabras repetidas.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: section start ]
+Ejercicio 2
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: comment start ]
+A +B + C + D = 20;
+Con 2≤A≤7, B≤4, C≥3, 3≤D≤11
+A = 2 + A'
+C = 3 + C'
+D = 3 + D'
+
+Se quedarían las restricciones: 
+Con A'≤5, B≤4, C'≥0, D'≤8
+
+y la igualdad
+A' +B + C' + D' = 12;
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+gen: sum(z^k,k,0,inf)*sum(z^k,k,0,4)*sum(z^k,k,0,inf)*sum(z^k,k,0,8)$
+genexp: taylor(gen,z,0,12)$
+coeff(genexp,z,12);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Hay 315 formas de realizar el reparto
+   [wxMaxima: comment end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 23.05.1"$

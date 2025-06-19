@@ -1,0 +1,139 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 22.04.0 ] */
+/* [wxMaxima: comment start ]
+JESÚS REPISO RIO      1ºA SOFTWARE      16/01/2023
+
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+TEMA 1
+
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+1.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+inv_mod(7636552,9355875);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+2.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+gcd(35672,68445);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+13/13;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+La congruencia tiene solución debido a que el mcd de el primer número y el módulo es divisor del segundo número.
+
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+35672*3300;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+gcd(117717600,68445);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+13/195;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+No es solución de la congruencia: Para que fuera solución debería ser divisor el mcd de los dos números con el 13.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+9594*35672;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+gcd(342237168,68445);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+13/1521;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+TEMA 3
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+1.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+load(graphs)$
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+g1: petersen_graph();
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+print_graph(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+hamilton_cycle(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+degree_sequence(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+No hay caminos ni ciclos de hamilton
+
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+chromatic_number(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+coloracion: vertex_coloring(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+max_clique(g1);
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 22.04.0"$

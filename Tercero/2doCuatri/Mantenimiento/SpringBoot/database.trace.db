@@ -1,0 +1,8 @@
+2025-05-07 18:59:49.254435+02:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "SELECT * FROM PERSONA CUENTA [*]CUENTA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA CUENTA PERSONA"
+Syntax error in SQL statement "SELECT * FROM PERSONA CUENTA [*]CUENTA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA CUENTA PERSONA"; SQL statement:
+SELECT * FROM PERSONA CUENTA CUENTA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA PERSONA CUENTA CUENTA PERSONA [42000-232]
+2025-05-07 19:00:15.239544+02:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select * from cuenta join cuenta , cuenta ,[*]"; se esperaba "identifier"
+Syntax error in SQL statement "select * from cuenta join cuenta , cuenta ,[*]"; expected "identifier"; SQL statement:
+select * from cuenta join cuenta , cuenta , [42001-232]

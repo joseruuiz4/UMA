@@ -1,0 +1,210 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 23.05.1 ] */
+/* [wxMaxima: title   start ]
+TEMA1
+Ejercicio 1
+   [wxMaxima: title   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Primero simplificamos el sistema de forma que el sistema nos queda
+5^17x≣3 (mód 6) -> aplicamos teorema euler-fermat ya que mcd(5,6) = 1
+x ≣2 (mód 5)
+7x≣20 (mod 36) ->calculamos el inverso de 7 en mod 36
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+5^17/6
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+gcdex(6,5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+6^1-6^0;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+5^5 = 1 mod 6 aplicando el teorema de euler-fermat, por lo que 5^17 = (5^5)^3*5^2 = 1*25 = 25, nos queda 25, siendo 1 en mod 6
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+2^7;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(128,36);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+inv_mod(7, 36);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+20*31;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(620,6);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Nos queda el sistema:
+x≣3 (mód 6)
+x ≣2 (mód 5)
+x≣2 (mod 36)
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+chinese ([3,2,2],[6,5,36]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+lcm(6,5,36);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Ejercicio
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+NO TIENE SOLUCION
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: title   start ]
+EJERCICIO 2
+   [wxMaxima: title   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Probamos uno a uno
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987694321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987684321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987674321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987664321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987654321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987644321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987634321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987624321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987614321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+mod(987604321, 19);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Solo para x = 7, el numero es multiplo de 19
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: title   start ]
+TEMA 3
+   [wxMaxima: title   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+load(graphs)$
+
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+g1 : clebsch_graph();
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+is_connected(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+is_planar(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+hg1: hamilton_cycle(g1);
+draw_graph(g1,show_edges=vertices_to_cycle(hg1)); 
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+chromatic_number(g1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+vertex_coloring(g1);
+
+draw_graph(g1,vertex_size=4,show_id=true,
+        vertex_partition=[[1,2],[3,8],[4,6],[5,7]]);
+
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+
+
+es conexo, no es plano, si es hamiltoniano, tiene numero cromatico 4
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 23.05.1"$
