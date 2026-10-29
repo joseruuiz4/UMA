@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+</head>
+
+
+<body>
+<h1><%= title %></h1>
+
+<form action="/especies/guardar" method="post">
+    <input type="hidden" name="especie_id" value="<%=especie.especie_id%>">
+
+    <label>Nombre</label>
+    <input type="text" disabled value="<%=especie.especie%>">
+    <br>
+
+    <label>Peso medio</label>
+    <input type="number" name="peso_medio" value="<%=especie.peso_medio%>">
+    <br>
+
+    <label>Esperanza de vida</label>
+    <input type="text" name="esperanza_vida" value="<%=especie.esperanza_vida%>">
+    <br>
+
+    <label>Familia</label>
+
+    <select name="clasificacion">
+        <%familias.forEach(function(familia){%>
+            <option value="<%=familia.familia_id%>" <%=familia.familia_id === especie.clasificacion ? "selected" : ""%>  ><%=familia.familia%></option>
+        <%})%>
+    </select>
+
+    <button type="submit">Guardar</button>
+</form>
+
+
+    <h2>Personajes de la especie</h2>
+
+    <ul>
+        <% personajes.forEach(function(personaje) { %>
+        <li><%=personaje.nombre%></li>
+        <% }); %>
+    </ul>
+
+
+</body>
+</html>

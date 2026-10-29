@@ -1,0 +1,52 @@
+2.a hset producto:1 "Nombre" "Camiseta" "Precio" "19.99" "Stock" "100"
+
+2.b hset Usuario:1 "Nombre" "Ana García" "Email" "ana@email.es" "Puntos" "50"
+
+2.c rpush Carrito:1 1
+
+2.d setex Oferta:1 120 "50% DESCUENTO - VÁLIDO 2 MIN"
+
+
+3.a hget Producto:1 "Nombre"
+
+3.b hincrby Producto:1 "Stock" "50"
+    hget Producto:1 "Stock"
+    
+3.c exists Producto:1
+    exists Producto:999
+    
+3.d hexpire Producto:1 300 FIELDS 1 "Stock"
+    httl Producto:1 FIELDS 1 "Stock"
+
+3.e hset Producto:2 "Nombre" "Libro Redis" "Precio" "29.99" "Stock" "25"
+    hgetall Producto:2
+    
+3.f hdel Producto:1 Precio
+    hget Producto:1 Precio
+
+3.g llen Carrito:1
+    lrange Carrito:1 0 -1
+    
+3.h lindex Carrito:1 0
+    hset Producto:3 Nombre "Libro Mongo" Precio "49.99" Stock "10"
+    rpush Carrito:1 3
+
+3.i lpop Carrito:1
+
+3.i rpop Carrito:1
+
+3.k hget Usuario:1 Email
+
+3.l hgetall Usuario:1
+
+3.m hset Usuario:1 Telefono "555-1234"
+
+3.n hincrby Usuario:1 Puntos 25
+
+3.o rpush Carrito:1 2
+
+3.p llen Carrito:1
+
+3.q del Carrito:1
+
+3.r exists Carrito:1

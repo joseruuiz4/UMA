@@ -1,0 +1,128 @@
+STAGE 1
+Salida por terminal:
+
+echo hola | mpirun -np 4 ./P3_ring
+type a word and press enter: process 0 sends the word hola
+process 1 has the word hola
+process 2 has the word hola
+process 3 has the word hola
+the word hola came back to process 0, the ring is closed
+
+
+STAGE 2
+time (echo hello | mpirun --oversubscribe -np 8 ./P3_ring_after)
+
+type a word and press enter: process 0 sends the word hello
+process 1 has the word hello
+process 2 has the word hello
+process 3 has the word hello
+process 4 has the word hello
+process 5 has the word hello
+process 6 has the word hello
+process 7 has the word hello
+the word hello came back to process 0, the ring is closed
+
+real    0m17,133s
+user    0m56,298s
+sys     0m0,323s
+
+
+-------------------------------------------------------------------
+
+time (echo hello | mpirun --oversubscribe -np 8 ./P3_ring_before)
+
+type a word and press enter: process 0 sends the word hello
+process 1 has the word hello
+process 2 has the word hello
+process 3 has the word hello
+process 4 has the word hello
+process 5 has the word hello
+process 6 has the word hello
+process 7 has the word hello
+the word hello came back to process 0, the ring is closed
+
+real    0m3,132s
+user    0m0,181s
+sys     0m0,307s
+
+
+En la versión after cada proceso espera 2 segundos después de recibir la palabra, 
+y la palabra tiene que pasar por todos en orden. Cada espera empieza cuando acaba la anterior, 
+así que se suman: con 8 procesos son unos 16 s, y el total (17,1 s) es casi la suma de las esperas.
+
+En la versión before todos los procesos esperan a la vez antes de empezar el anillo. 
+Las esperas se solapan, así que el total (3,1 s) es casi una sola espera de 2 s, 
+más el tiempo de arranque y comunicación.
+
+STAGE 3
+nproc
+16
+
+echo hello | mpirun -np 1 ./P3_ring
+type a word and press enter: process 0 sends the word hello
+the word hello came back to process 0, the ring is closed
+
+La palabra se envía a sí mismo, porque con un solo proceso el siguiente y 
+el anterior del anillo son el mismo. Recibe su propio mensaje y el programa termina.
+
+
+echo hello | mpirun -np 20 ./P3_ring
+--------------------------------------------------------------------------
+There are not enough slots available in the system to satisfy the 20
+slots that were requested by the application:
+
+  ./P3_ring
+
+Either request fewer procs for your application, or make more slots
+available for use.
+
+A "slot" is the PRRTE term for an allocatable unit where we can
+launch a process.  The number of slots available are defined by the
+environment in which PRRTE processes are run:
+
+  1. Hostfile, via "slots=N" clauses (N defaults to number of
+     processor cores if not provided)
+  2. The --host command line parameter, via a ":N" suffix on the
+     hostname (N defaults to 1 if not provided)
+  3. Resource manager (e.g., SLURM, PBS/Torque, LSF, etc.)
+  4. If none of a hostfile, the --host command line parameter, or an
+     RM is present, PRRTE defaults to the number of processor cores
+
+In all the above cases, if you want PRRTE to default to the number
+of hardware threads instead of the number of processor cores, use the
+--use-hwthread-cpus option.
+
+Alternatively, you can use the --map-by :OVERSUBSCRIBE option to ignore the
+number of available slots when deciding the number of processes to
+launch.
+--------------------------------------------------------------------------
+
+Hay 16 núcleos y Open MPI no lanza más procesos que huecos disponibles sin --oversubscribe. 
+Da un error de slots insuficientes y el programa no se ejecuta.
+
+
+echo hello | mpirun --oversubscribe -np 20 ./P3_ring
+type a word and press enter: process 0 sends the word hello
+process 1 has the word hello
+process 2 has the word hello
+process 3 has the word hello
+process 4 has the word hello
+process 5 has the word hello
+process 6 has the word hello
+process 7 has the word hello
+process 8 has the word hello
+process 9 has the word hello
+process 10 has the word hello
+process 11 has the word hello
+process 12 has the word hello
+process 13 has the word hello
+process 14 has the word hello
+process 15 has the word hello
+process 16 has the word hello
+process 17 has the word hello
+process 18 has the word hello
+process 19 has the word hello
+the word hello came back to process 0, the ring is closed
+
+MPI lanza los 20 procesos aunque haya más que núcleos. Los procesos comparten 
+los núcleos, la palabra da la vuelta y el programa termina bien.

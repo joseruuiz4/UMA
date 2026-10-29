@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<h1></h1>
+
+<table>
+    <tr>
+        <th><a href="/?orden=titulo">TITULO</a></th>
+        <th><a href="/?orden=anyo">AÑO</a></th>
+        <th>TEXTO APERTURA</th>
+        <th></th>
+    </tr>
+    <% peliculas.forEach(function(pelicula) { %>
+        <tr>
+            <td> <%= pelicula.titulo %> </td>
+            <td> <%= pelicula.anyo %> </td>
+            <td> <%= pelicula.texto_apertura %> </td>
+            <td><a href="/frases/<%= pelicula.pelicula_id %>">Frases</a> </td>
+        </tr>
+    <% }); %>
+</table>
+<a href="/">Quitar orden</a>
+</body>
+</html>

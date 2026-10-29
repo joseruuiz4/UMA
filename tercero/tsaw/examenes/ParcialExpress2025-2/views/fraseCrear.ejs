@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<h1></h1>
+
+<form action="/frase/guardar" method="post">
+    <h1>Nueva frase...</h1>
+
+    <input type="hidden" name="idPelicula" value="<%=idPelicula%>">
+
+    <label>Frase:</label>
+    <textarea cols="100" rows="2" name="frase"></textarea><br>
+
+    <label>Personaje: </label>
+
+                <select name="personaje">
+                    <% todosPersonajes.forEach(function(personaje) {
+                        if(idPersonajesPeliculas.includes(personaje.personaje_id)){
+                    %>
+                    <option value="<%= personaje.personaje_id %>" label="<%= personaje.nombre %>"></option>
+
+
+                    <% }}); %>
+                </select>
+    <br>
+
+    <button type="submit">Guardar</button>
+
+
+</form>
+</body>
+</html>

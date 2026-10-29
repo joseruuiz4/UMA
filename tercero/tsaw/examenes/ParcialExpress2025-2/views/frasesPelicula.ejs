@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<h1>Frases célebres de la pelicula: <%=pelicula.titulo%></h1>
+
+<%
+
+ %>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>FRASE</th>
+        <th>PERSONAJE</th>
+        <th></th>
+    </tr>
+    <% let i = 0;
+    frases.forEach(function(frase) {
+    %>
+        <tr>
+            <td> <%= frase.frase_id %> </td>
+            <td> <%= frase.frase %> </td>
+            <td> <%= personajes[i] %> </td>
+        </tr>
+
+
+    <% i++;}); %>
+</table>
+<a href="/">Volver</a>
+<a href="/frase/crear/<%=pelicula.pelicula_id%>">Nueva frase...</a>
+
+</body>
+</html>

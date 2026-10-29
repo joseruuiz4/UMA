@@ -1,0 +1,98 @@
+STAGE 1
+
+Servidor:
+server: listening on port 9000
+server: client connected from 127.0.0.1:54096
+server: received 1024 bytes
+server: received 1024 bytes
+server: received 452 bytes
+server: client disconnected
+
+Cliente:
+client: 2500 bytes echoed in 0.062 ms  (identical)
+
+
+
+STAGE 2
+Times for 10 bytes:
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10
+client: 10 bytes echoed in 0.039 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10
+client: 10 bytes echoed in 0.022 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10
+client: 10 bytes echoed in 0.027 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10
+client: 10 bytes echoed in 0.026 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10
+client: 10 bytes echoed in 0.029 ms  (identical)
+
+Times for 1000 bytes:
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 1000
+client: 1000 bytes echoed in 0.021 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 1000
+client: 1000 bytes echoed in 0.037 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 1000
+client: 1000 bytes echoed in 0.031 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 1000
+client: 1000 bytes echoed in 0.028 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 1000
+client: 1000 bytes echoed in 0.024 ms  (identical)
+
+Times for 10000 bytes:
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10000
+client: 10000 bytes echoed in 0.049 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10000
+client: 10000 bytes echoed in 0.077 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10000
+client: 10000 bytes echoed in 0.054 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10000
+client: 10000 bytes echoed in 0.043 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 10000
+client: 10000 bytes echoed in 0.064 ms  (identical)
+
+Times for 100000 bytes:
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 100000
+client: 100000 bytes echoed in 40.257 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 100000
+client: 100000 bytes echoed in 41.593 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 100000
+client: 100000 bytes echoed in 40.602 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 100000
+client: 100000 bytes echoed in 40.479 ms  (identical)
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 100000
+client: 100000 bytes echoed in 40.270 ms  (identical)
+
+Table:
+
+Size        Average time in ms          Chunks
+10              0,0286                     1
+1000            0,0282                     1
+10000           0,0574                     10
+100000          40,640                     98
+
+
+
+STAGE 3
+Servidor:
+server: client connected from 127.0.0.1:53592
+server: received 1024 bytes
+server: received 1024 bytes
+server: received 1024 bytes
+server: received 928 bytes
+server: client disconnected
+
+server: client connected from 127.0.0.1:53602
+server: received 1024 bytes
+server: received 1024 bytes
+server: received 1024 bytes
+server: received 928 bytes
+server: client disconnected
+
+
+Cliente 1:
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 4000
+client: 4000 bytes echoed in 3000.294 ms  (identical)
+
+Cliente 2: 
+[jose@archlinux p1]$ ./P1_echo_client 127.0.0.1 9000 4000
+client: 4000 bytes echoed in 6729.615 ms  (identical)

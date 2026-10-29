@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+
+
+  <body>
+    <h1><%= title %></h1>
+    <table>
+        <tr>
+            <th>NOMBRE</th>
+            <th>DIAMETRO</th>
+            <th>CLIMA</th>
+            <th>TERRENO</th>
+            <th>ESPECIES</th>
+        </tr>
+        <% planetas.forEach(function(planeta) { %>
+            <tr>
+                <td> <%= planeta.nombre %> </td>
+                <td> <%= planeta.diametro %> </td>
+                <td> <%= planeta.clima %> </td>
+                <td> <%= planeta.terreno %> </td>
+                <td>
+                    <%
+                    especies.forEach(function (especie){
+                        if(especie.planeta === planeta.planeta_id){
+                    %>
+                    <a href="/especies/<%=especie.especie_id%>"><%=especie.especie%></a>
+
+
+
+                    <% }}); %>
+
+
+                </td>
+            </tr>
+        <% }); %>
+    </table>
+
+
+
+  </body>
+</html>

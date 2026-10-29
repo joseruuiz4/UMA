@@ -1,0 +1,20 @@
+Q: (3, 4, s)
+s:
+X4 := 0;
+
+while X1 != 0 do
+    X4 := X4 + 1;
+    X1 := X1 - 1
+od;
+
+while X2 != 0 do
+    X4 := X4 + 1;
+    X2 := X2 - 1
+od;
+
+while X3 != 0 do
+    X4 := X4 + 1;
+    X3 := X3 - 1
+od;
+
+X1 := X4

@@ -1,0 +1,59 @@
+STAGE 1
+
+server: listening on port 9100, my process number is 29251
+server: client 1 connected from 127.0.0.1
+server: client 2 connected from 127.0.0.1
+server: child 29257 finished with client 1
+server: child 29271 finished with client 2
+
+client: hello, you are client number 1
+client: goodbye
+client: finished in 6.00 seconds
+
+client: hello, you are client number 2
+client: goodbye
+client: finished in 6.00 seconds
+
+
+STAGE 2
+
+Clientes a la vez 	Tiempo del cliente más lento	Procesos del servidor
+1	                            6 s	                            2
+2	                            6 s	                            3
+3	                            6 s	                            4
+
+El tiempo no crece con el número de clientes porque cada cliente lo atiende 
+un proceso hijo propio y los sleep de todos los hijos transcurren a la vez, 
+mientras que lo único que crece es el número de procesos, uno más por cliente. 
+
+
+STAGE 3
+
+Primer experimento: Ejecuta un cliente con --leave y observa que imprime el servidor
+client: connected and leaving at once
+server: client 1 connected from 127.0.0.1
+write: Broken pipe
+
+El cliente cierra el socket y el segundo write falla por lo que imprime: write: Broken pipe
+
+Segundo experimento: Ejecuta tres clientes normales, espera a que terminen y entonces lista los procesos del servidor
+Lista de procesos:
+Z+   [P2_conc_server] <defunct>
+Z+   [P2_conc_server] <defunct>
+Z+   [P2_conc_server] <defunct>
+
+Los hijos terminan, pero el padre nunca llama a wait/waitpid, quedandose en estado zombie
+esperando que el padre recoja su código de salida. Desaparecerán al cerrar el padre. 
+Añadiendo signal(SIGCHLD, SIG_IGN) se evitaria el error 
+
+
+Tercer experimento: Termina un hijo con kill mientras esta en proceso
+server: listening on port 9100, my process number is 37871
+server: client 1 connected from 127.0.0.1
+server: client 2 connected from 127.0.0.1
+server: child 38190 finished with client 2
+
+client: finished in 4.43 seconds
+
+El cliente del hijo muerto no recibe respuesta (la conexión se cierra), 
+pero el padre sigue aceptando clientes nuevos con normalidad. El hijo muerto aparece además como zombie.
