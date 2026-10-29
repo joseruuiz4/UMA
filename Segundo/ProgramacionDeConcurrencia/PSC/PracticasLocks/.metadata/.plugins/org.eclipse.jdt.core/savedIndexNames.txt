@@ -1,4 +1,0 @@
-INDEX VERSION 1.134+C:\Users\ruizp\Desktop\Jose\uni\eclipse\files\PSC\PracticasLocks\.metadata\.plugins\org.eclipse.jdt.core
-2463479969.index
-1067094681.index
-1865797976.index
