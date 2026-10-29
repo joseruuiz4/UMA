@@ -4,3 +4,60 @@
 **/target/
 
 **/venv*/
+
+# Dependencias
+**/node_modules/
+**/bower_components/
+**/jspm_packages/
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+**/.gradle/
+**/vendor/
+
+# Build / compilados
+**/build/
+**/dist/
+**/out/
+**/bin/
+**/*.class
+**/*.war
+**/*.o
+**/*.exe
+**/.next/
+**/.nuxt/
+**/.cache/
+**/coverage/
+
+# Entorno y secretos
+**/.env
+**/.env.*
+!**/.env.example
+**/*.key
+
+# Logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# IDEs / editores
+**/.metadata/
+**/.idea/
+**/.vscode/
+**/*.iml
+**/.vs/
+**/*.swp
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Generados / locales
+**/*:Zone.Identifier
+**/.angular/
+**/obj/
+**/*.mv.db
+**/*.trace.db
+**/*.sqlite3
