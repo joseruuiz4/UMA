@@ -1,0 +1,3 @@
+[submodule "tercero/tsaw/bancosol"]
+	path = tercero/tsaw/bancosol
+	url = https://github.com/joseruuiz4/Bancosol.git
